@@ -1,5 +1,7 @@
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -49,8 +51,19 @@ public class testFM {
 
 			// 胎心率曲线
 			ArrayList<Integer> fhrlistIntact = FileData.intArray_to_listArray(testfhrlist);
+			
+			/*String fileName = string.split("/")[1];
 
-
+			File file = new File("D:\\lianProject\\testfile\\" + fileName + ".txt");
+			
+			
+			 FileWriter fw = new FileWriter(file);
+			for (Integer integer : fhrlistIntact) {
+				
+				fw.write(integer + " ");
+			}
+			fw.close();*/
+			
 			// 宫缩曲线
 			ArrayList<Integer> tocolist = FileData.intArray_to_listArray(testtocolist);
 
@@ -126,18 +139,34 @@ public class testFM {
 	        	partFMSysn_RT = afm_detect_syn.calFMSysn_RTbaseLine(fhrlist, tocopartlist, fmpartlist,
 	        													analyseResult, 3.2f, realTimeCell, partFMSysn_RT, fhrbaseline_RT);
 	        	
-
+	        	//去掉加减速最后一次求出基线
+	        	FhrAnalyse fhrAnalyse = new FhrAnalyse();
+	        	ArrayList<Integer> fhrBaseline_RT_removeAccAndDec = fhrAnalyse.getFhrBaseline_RT_removeAccAndDec(fhrlistIntact, 0, 3.2f);
+	        	
 	    		lastIndex = index;
 	    			
 	    		fmSysn_Fix_RTBL.addAll(partFMSysn_RT);
+	    		
+		    	// 梅佳师兄的求胎动点和基线的方法
+		    	List<Integer> calFMSysn_Fix_RT = afm_detect_syn.calFMSysn_Fix_RT(fhrlistIntact, tocolist, newafmarray, 
+		    																		analyseResult, 3.2f);
+		    	myFm.put(string, fmSysn_Fix_RTBL);
+		    	hmjFm.put(string, calFMSysn_Fix_RT);
+				String fileName = string.split("/")[1];
+
+				File file = new File("D:\\lianProject\\bsfile\\" + fileName + ".txt");
+				
+				
+				 FileWriter fw = new FileWriter(file);
+				for (Integer integer : fhrBaseline_RT_removeAccAndDec) {
+					
+					fw.write(integer + " ");
+				}
+				fw.close();
+				
+				
 	    	}
-	    	
-	    	
-	    	// 梅佳师兄的求胎动点和基线的方法
-	    	List<Integer> calFMSysn_Fix_RT = afm_detect_syn.calFMSysn_Fix_RT(fhrlistIntact, tocolist, newafmarray, 
-	    																		analyseResult, 3.2f);
-	    	myFm.put(string, fmSysn_Fix_RTBL);
-	    	hmjFm.put(string, calFMSysn_Fix_RT);
+
 		}
 		
 		for(int fmIndex = 0; fmIndex < filePath.size(); fmIndex++) {

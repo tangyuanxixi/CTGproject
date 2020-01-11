@@ -2865,6 +2865,7 @@ public class FhrAnalyse {
 					    arrayacc.add(acctmp);
 				    
 			    	}
+			    	
 			    	i = i + 2;
 			    }
 			    
