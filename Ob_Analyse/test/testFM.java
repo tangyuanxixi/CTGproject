@@ -22,7 +22,7 @@ public class testFM {
 	public static void main(String[] args) throws IOException {
 		
 		String path = "";
-		List<String> filePath = readFile("D:\\lianProject\\filedir\\dir.txt");
+		List<String> filePath = readFile("D:\\lianProject\\ctgfile\\filedir\\dir.txt");
 		System.out.println(filePath.size());
 
 		Map<String,List<Integer>> myFm =  new HashMap<>();
@@ -31,9 +31,9 @@ public class testFM {
 		for(int i = 0; i < filePath.size(); i++){
 			
 			String string = filePath.get(i);
-			String movefilestr = "D:/lianProject/new_data"+ string +"_0.move"; // 胎儿活动图曲线从里面抽取
+			String movefilestr = "D:/lianProject/ctgfile/new_data"+ string +"_0.move"; // 胎儿活动图曲线从里面抽取
 			
-			String fetalfilestr = "D:/lianProject/new_data"+ string +".fetal"; // 宫缩曲线跟胎心率曲线从里面抽取
+			String fetalfilestr = "D:/lianProject/ctgfile/new_data"+ string +".fetal"; // 宫缩曲线跟胎心率曲线从里面抽取
 			
 			
 			// 数据预处理
@@ -139,35 +139,87 @@ public class testFM {
 	        	partFMSysn_RT = afm_detect_syn.calFMSysn_RTbaseLine(fhrlist, tocopartlist, fmpartlist,
 	        													analyseResult, 3.2f, realTimeCell, partFMSysn_RT, fhrbaseline_RT);
 	        	
-	        	//去掉加减速最后一次求出基线
-	        	FhrAnalyse fhrAnalyse = new FhrAnalyse();
-	        	ArrayList<Integer> fhrBaseline_RT_removeAccAndDec = fhrAnalyse.getFhrBaseline_RT_removeAccAndDec(fhrlistIntact, 0, 3.2f);
 	        	
 	    		lastIndex = index;
 	    			
 	    		fmSysn_Fix_RTBL.addAll(partFMSysn_RT);
 	    		
-		    	// 梅佳师兄的求胎动点和基线的方法
-		    	List<Integer> calFMSysn_Fix_RT = afm_detect_syn.calFMSysn_Fix_RT(fhrlistIntact, tocolist, newafmarray, 
-		    																		analyseResult, 3.2f);
-		    	myFm.put(string, fmSysn_Fix_RTBL);
-		    	hmjFm.put(string, calFMSysn_Fix_RT);
-				String fileName = string.split("/")[1];
-
-				File file = new File("D:\\lianProject\\bsfile\\" + fileName + ".txt");
-				
-				
-				 FileWriter fw = new FileWriter(file);
-				for (Integer integer : fhrBaseline_RT_removeAccAndDec) {
-					
-					fw.write(integer + " ");
-				}
-				fw.close();
-				
+		    	
 				
 	    	}
-
+	    	
+	    	// 梅佳师兄的求胎动点和基线的方法
+	    	List<Integer> calFMSysn_Fix_RT = afm_detect_syn.calFMSysn_Fix_RT(fhrlistIntact, tocolist, newafmarray, 
+	    																		analyseResult, 3.2f);
+	    	
+	    	//去掉加减速FHR曲线
+	    	FhrAnalyse fhrAnalyse = new FhrAnalyse();
+	    	
+	    	ArrayList<Integer> fhrbaseline_RT_old = fhrAnalyse.getRemoveAccOrDecFhr(fhrlistIntact, 0, 3.2f);
+	    	
+	    	//去掉加减速最后一次求出基线
+	    	ArrayList<Integer> fhrBaseline_RT_removeAccAndDec = fhrAnalyse.getFhrBaseline_RT_removeAccAndDec(fhrlistIntact, 0, 3.2f);
+	    	
+	    	myFm.put(string, fmSysn_Fix_RTBL);
+	    	hmjFm.put(string, calFMSysn_Fix_RT);
+			String fileName = string.split("/")[1];
+			
+			// reaccfile,保存去掉加减速FHR曲线
+			File file = new File("D:\\lianProject\\ctgfile\\reaccfile\\" + fileName + ".txt"); 
+			
+			 FileWriter fw = new FileWriter(file);
+			for (Integer integer : fhrbaseline_RT_old) {
+				
+				fw.write(integer + " ");
+			}
+			fw.close();
+			
+			// fmmfile,保存胎儿活动图曲线
+			File filefmm = new File("D:\\lianProject\\ctgfile\\fmmfile\\" + fileName + ".txt");
+			
+			FileWriter fwmm = new FileWriter(filefmm);
+			for (Integer integer : newafmarray) {
+				
+				fwmm.write(integer + " ");
+			}
+			fwmm.close();
+			
+			// bsfile, 基线
+			File filebs = new File("D:\\lianProject\\ctgfile\\bsfile\\" + fileName + ".txt");
+			
+			FileWriter bsfile = new FileWriter(filebs);
+			for (Integer integer : fhrBaseline_RT_removeAccAndDec) {
+				
+				bsfile.write(integer + " ");
+			}
+			bsfile.close();
+	    	// fmfile, 胎动点
+			File filefm = new File("D:\\lianProject\\ctgfile\\fmfile\\" + fileName + ".txt");
+			
+			FileWriter fmfile = new FileWriter(filefm);
+			for (Integer integer : fmSysn_Fix_RTBL) {
+				
+				fmfile.write(integer + " ");
+			}
+			fmfile.write("\n");
+			for (Integer integer : calFMSysn_Fix_RT) {
+				fmfile.write(integer + " ");
+			}
+			fmfile.close();
+			
+	    	// tocofile, 胎动点
+			File filetoco = new File("D:\\lianProject\\ctgfile\\tocofile\\" + fileName + ".txt");
+			
+			FileWriter tocofile = new FileWriter(filetoco);
+			for (Integer integer : tocolist) {
+				
+				tocofile.write(integer + " ");
+			}
+			tocofile.close();
 		}
+		
+		
+		
 		
 		for(int fmIndex = 0; fmIndex < filePath.size(); fmIndex++) {
 			

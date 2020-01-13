@@ -2297,7 +2297,7 @@ public class FhrAnalyse {
 			
 
 		}
-
+		
 
 		 ArrayList<Integer> resultfhr = new ArrayList<>();
 		 
@@ -2329,15 +2329,22 @@ public class FhrAnalyse {
 		// 1、根据前面求的粗糙基线找出加减速点，{acctime,startindex,i,isacc,diffhr}
 		ArrayList<int[]> accResult = getAccSimple(srcarrfhr, analyseResult, fix_change);//加速
 		ArrayList<Integer> tempfhrbaseline = analyseResult.fhrbaseline;
-	
+		int accStartnum = 0;
+		for(int i = tempfhrbaseline.size() - 1; i >= 0; i--){
+			if(tempfhrbaseline.get(i) == tempfhrList.get(i))
+			{
+				accStartnum = tempfhrbaseline.get(i);
+				break;
+			}
+		}
 		for(int i = 0; i < accResult.size(); i++){
 			
 			int[] acc = accResult.get(i);
 			
 			for(int j = acc[1]; j <= acc[2]; j++){
 				
-				tempfhrList.set(j, tempfhrbaseline.get(acc[1]));
-
+			//	tempfhrList.set(j, tempfhrbaseline.get(acc[1]));
+				tempfhrList.set(j, accStartnum);
 			}
 			
 		}
@@ -2345,13 +2352,22 @@ public class FhrAnalyse {
 
 		ArrayList<int[]> decResult = getDecSimple(srcarrfhr, analyseResult, fix_change);
 		
+		int decStartnum = 0;
+		for(int i = tempfhrbaseline.size() - 1; i >= 0; i--){
+			if(tempfhrbaseline.get(i) == tempfhrList.get(i))
+			{
+				decStartnum = tempfhrbaseline.get(i);
+				break;
+			}
+		}
+		
 		for(int i = 0; i < decResult.size(); i++){
 			
 			int[] dec = decResult.get(i);
 
 			for(int j = dec[1]; j <= dec[2]; j++){
 				
-				tempfhrList.set(j, tempfhrbaseline.get(dec[1]));
+				tempfhrList.set(j, decStartnum);
 			}
 			
 

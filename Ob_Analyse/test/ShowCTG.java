@@ -38,9 +38,9 @@ public class ShowCTG extends JFrame {
 
     	
     	
-    	String movefilestr = "D:/lianProject/new_data/67/190118162619/190118162619_0.move"; // 胎儿活动图曲线从里面抽取
+    	String movefilestr = "D:/lianProject/ctgfile/new_data/15/190110093416/190110093416_0.move"; // 胎儿活动图曲线从里面抽取
 		
-		String fetalfilestr = "D:/lianProject/new_data/67/190118162619/190118162619.fetal"; // 宫缩曲线跟胎心率曲线从里面抽取
+		String fetalfilestr = "D:/lianProject/ctgfile/new_data/15/190110093416/190110093416.fetal"; // 宫缩曲线跟胎心率曲线从里面抽取
 		
 		
 		// 数据预处理
@@ -155,9 +155,10 @@ public class ShowCTG extends JFrame {
     	// 梅佳师兄的求胎动点和基线的方法
     	List<Integer> calFMSysn_Fix_RT = afm_detect_syn.calFMSysn_Fix_RT(fhrlistIntact, tocolist, newafmarray, 
     																		analyseResult, 3.2f);
-    	
+    	ArrayList<Integer> fittedfhrSeg = analyseResult.fittedfhrSeg;
+    	System.out.println("fittedfhrseg" + fittedfhrSeg);
     	ArrayList<Integer> fhrBaseline = fhrAnalysetool.getFhrBaseline(fhrlistIntact, 3.2f);
-
+    	
     	MyNewCTGPane myNewPane = new MyNewCTGPane(newafmarray, fhrlistIntact, tocolist, fhrbaseline_RT,newfmSysn_Fix_RT, 
     			removeFhr,calFMSysn_Fix_RT,fhrBaseline_RT_removeAccAndDec);
 
